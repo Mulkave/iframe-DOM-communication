@@ -7,20 +7,22 @@
       console.debug('Intantiating Frame');
     }
 
-    Frame.handleClientMessages = function(e) {
+    Frame.prototype.handleClientMessages = function(e) {
       var action, command, data;
 
       command = e.data.split(/:(.*)/);
       action = command[0];
       data = JSON.parse(command[1]);
-      console.log('Frame received message', action, data);
+      console.log('Frame received message');
+      console.debug('action:', action);
+      console.debug('data:', data);
       switch (action) {
         case 'login':
-          return this.login(data);
+          return console.log(this);
       }
     };
 
-    Frame.login = function(data) {
+    Frame.prototype.login = function(data) {
       return console.log('should perform logging in with data', data);
     };
 
@@ -28,6 +30,6 @@
 
   })();
 
-  window.Frame = Frame;
+  window.Frame = new Frame;
 
 }).call(this);
