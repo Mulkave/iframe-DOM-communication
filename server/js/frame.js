@@ -5,6 +5,7 @@
   Frame = (function() {
     function Frame() {
       console.debug('Intantiating Frame');
+      window.addEventListener('message', this.handleClientMessages);
     }
 
     Frame.prototype.handleClientMessages = function(e) {
@@ -18,7 +19,7 @@
       console.debug('data:', data);
       switch (action) {
         case 'login':
-          return console.log(this);
+          return parent.postMessage('loginComplete', document.referrer);
       }
     };
 

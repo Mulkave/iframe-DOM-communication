@@ -6,7 +6,7 @@
     function App(frame_selector) {
       console.log('instantiation App with frame', $(frame_selector));
       this.iframe = $(frame_selector).get(0);
-      window.addEventListener('message', this.handleFrameMessages, false);
+      window.addEventListener('message', this.handleFrameMessages);
     }
 
     App.prototype.handleFrameMessages = function(e) {
@@ -14,7 +14,8 @@
 
       command = e.data.split(/:(.*)/);
       action = command[0];
-      data = JSON.parse(command[1]);
+      data = command[1] || "{}";
+      data = JSON.parse(data);
       console.log('App received message', action, data);
       switch (action) {
         case 'loginComlete':
@@ -36,7 +37,7 @@
     };
 
     App.prototype.loginComplete = function(data) {
-      return console.log('login complete...');
+      return this.publish('login:complete');
     };
 
     App.prototype.when_window_loads = function(callback) {

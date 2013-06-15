@@ -3,7 +3,7 @@ class Frame
 	constructor: ->
 		console.debug 'Intantiating Frame'
 
-		# window.addEventListener 'message', @handleClientMessages
+		window.addEventListener 'message', @handleClientMessages
 
 	handleClientMessages: (e)->
 
@@ -16,9 +16,8 @@ class Frame
 		console.debug 'data:', data
 
 		switch action
-			when 'login' then console.log @
+			when 'login' then parent.postMessage('loginComplete', document.referrer)
 
-	login: (data)->
-		console.log 'should perform logging in with data', data
+	login: (data)-> console.log 'should perform logging in with data', data
 
 window.Frame = new Frame

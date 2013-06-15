@@ -6,13 +6,14 @@ class App
 		@iframe = $(frame_selector).get 0
 
 		# Populate messages listener
-		window.addEventListener 'message', @handleFrameMessages, false
+		window.addEventListener 'message', @handleFrameMessages
 
 	handleFrameMessages: (e)->
 
 		command = e.data.split(/:(.*)/)
 		action  = command[0]
-		data    = JSON.parse command[1]
+		data 	= command[1] || "{}"
+		data    = JSON.parse data
 
 		console.log 'App received message', action, data
 
@@ -25,10 +26,10 @@ class App
 		@when_window_loads => @iframe.contentWindow.postMessage "#{action}:#{JSON.stringify(data)}", 'http://localhost:5656/iframe.html'
 
 	login: (data, callback)-> @perform 'login', data # .. deal with callback
-	loginComplete: (data)-> console.log 'login complete...'
+
+	loginComplete: (data)-> @publish 'login:complete'
 
 	when_window_loads: (callback)->
 		if document.readyState isnt 'complete' then window.onload = callback else callback?()
-
 
 window.App = App
