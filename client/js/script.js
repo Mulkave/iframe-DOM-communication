@@ -7,6 +7,8 @@
     return app.login({
       username: 'some.user',
       password: 'some.pass'
+    }, function(profile) {
+      return console.log('Got user profile', profile);
     });
   });
 

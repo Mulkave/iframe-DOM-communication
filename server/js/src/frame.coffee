@@ -3,7 +3,7 @@ class Frame
 	constructor: ->
 		console.debug 'Intantiating Frame'
 
-		window.addEventListener 'message', @handleClientMessages
+		window.addEventListener 'message', $.proxy @handleClientMessages, @
 
 	handleClientMessages: (e)->
 
@@ -16,8 +16,17 @@ class Frame
 		console.debug 'data:', data
 
 		switch action
-			when 'login' then parent.postMessage('loginComplete', document.referrer)
+			when 'login'
 
+				profile = {
+					id: '59sdfgujkf8234'
+					name: 'Mahatma Gandhi'
+					email: 'fast@forever.net'
+				}
+
+				@tell 'loginComplete', document.referrer
+
+	tell: (message, data)-> parent.postMessage "#{message}:#{JSON.stringify(data)}", document.referrer
 	login: (data)-> console.log 'should perform logging in with data', data
 
 window.Frame = new Frame

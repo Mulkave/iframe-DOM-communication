@@ -6,7 +6,7 @@ class App
 		@iframe = $(frame_selector).get 0
 
 		# Populate messages listener
-		window.addEventListener 'message', @handleFrameMessages
+		window.addEventListener 'message', $.proxy @handleFrameMessages, @
 
 	handleFrameMessages: (e)->
 
@@ -18,18 +18,34 @@ class App
 		console.log 'App received message', action, data
 
 		switch action
-			when 'loginComlete' then @loginComplete data
+			when 'loginComplete' then @loginComplete data
 
 
 	perform: (action, data)->
 		console.log 'performing', action, 'with', data
 		@when_window_loads => @iframe.contentWindow.postMessage "#{action}:#{JSON.stringify(data)}", 'http://localhost:5656/iframe.html'
 
-	login: (data, callback)-> @perform 'login', data # .. deal with callback
+	login: (data, callback)->
+		@subscribe 'login:complete', (data...)=>
+			@unsubscribe 'login:complete', callback
+			callback?(data)
+		@perform 'login', data # .. deal with callback
 
-	loginComplete: (data)-> @publish 'login:complete'
+	loginComplete: (data)-> @publish 'login:complete', data
 
 	when_window_loads: (callback)->
 		if document.readyState isnt 'complete' then window.onload = callback else callback?()
+
+	subscribe: (event, callback)->
+		console.debug 'subscribing to', event
+		$(@).on event, callback
+
+	unsubscribe: (event, callback)->
+		console.debug 'dropping subscription to', event
+		$(@).off event, callback
+
+	publish: (event, data...)->
+		console.log 'publishing', event, 'with', data
+		$(@).trigger event, data
 
 window.App = App

@@ -5,11 +5,11 @@
   Frame = (function() {
     function Frame() {
       console.debug('Intantiating Frame');
-      window.addEventListener('message', this.handleClientMessages);
+      window.addEventListener('message', $.proxy(this.handleClientMessages, this));
     }
 
     Frame.prototype.handleClientMessages = function(e) {
-      var action, command, data;
+      var action, command, data, profile;
 
       command = e.data.split(/:(.*)/);
       action = command[0];
@@ -19,8 +19,17 @@
       console.debug('data:', data);
       switch (action) {
         case 'login':
-          return parent.postMessage('loginComplete', document.referrer);
+          profile = {
+            id: '59sdfgujkf8234',
+            name: 'Mahatma Gandhi',
+            email: 'fast@forever.net'
+          };
+          return this.tell('loginComplete', document.referrer);
       }
+    };
+
+    Frame.prototype.tell = function(message, data) {
+      return parent.postMessage("" + message + ":" + (JSON.stringify(data)), document.referrer);
     };
 
     Frame.prototype.login = function(data) {
