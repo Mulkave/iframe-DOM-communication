@@ -1,0 +1,11 @@
+<?php
+
+$clientPort = '6700';
+$serverPort = '5656';
+
+exec("php -S localhost:{$serverPort} -t server > /dev/null 2>&1 & echo $!");
+exec("php -S localhost:{$clientPort} -t client > /dev/null 2>&1 & echo $!");
+echo "Visit your browser on http://localhost:{$clientPort} and open your browser console\r\n";
+
+// hand script so that it kills spawned commands when closed
+while(true) {}
