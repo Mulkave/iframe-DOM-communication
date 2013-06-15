@@ -26,7 +26,7 @@ class App
 		@when_window_loads => @iframe.contentWindow.postMessage "#{action}:#{JSON.stringify(data)}", 'http://localhost:5656/iframe.html'
 
 	login: (data, callback)->
-		@subscribe 'login:complete', (data...)=>
+		@subscribe 'login:complete', (e, data)=>
 			@unsubscribe 'login:complete', callback
 			callback?(data)
 		@perform 'login', data # .. deal with callback

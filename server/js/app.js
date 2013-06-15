@@ -36,10 +36,7 @@
     App.prototype.login = function(data, callback) {
       var _this = this;
 
-      this.subscribe('login:complete', function() {
-        var data;
-
-        data = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+      this.subscribe('login:complete', function(e, data) {
         _this.unsubscribe('login:complete', callback);
         return typeof callback === "function" ? callback(data) : void 0;
       });
