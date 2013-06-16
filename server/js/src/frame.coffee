@@ -24,9 +24,11 @@ class Frame
 					email: 'fast@forever.net'
 				}
 
-				@tell data.original_callback, profile
+				@tell data, profile
 
-	tell: (message, data)-> parent.postMessage "#{message}:#{JSON.stringify(data)}", document.referrer
+	tell: (original_data, data)->
+		all = original: original_data, result: data
+		parent.postMessage "#{original_data._callback}:#{JSON.stringify(all)}", document.referrer
 	login: (data)-> console.log 'should perform logging in with data', data
 
 window.Frame = new Frame

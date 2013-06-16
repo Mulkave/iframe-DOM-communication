@@ -11,17 +11,16 @@
     }
 
     App.prototype.handleFrameMessages = function(e) {
-      var action, command, data;
+      var action, command, data, original, result;
 
       command = e.data.split(/:(.*)/);
       action = command[0];
       data = command[1] || "{}";
       data = JSON.parse(data);
       console.log('App received message', action, data);
-      switch (action) {
-        case 'loginComplete':
-          return this.loginComplete(data);
-      }
+      original = data != null ? data.original : void 0;
+      result = data != null ? data.result : void 0;
+      return typeof this[action] === "function" ? this[action](result, original._subscribed_event) : void 0;
     };
 
     App.prototype.perform = function(action, data) {
@@ -34,20 +33,25 @@
     };
 
     App.prototype.login = function(data, callback) {
-      var _this = this;
+      var subscription_event,
+        _this = this;
 
-      this.subscribe('login:complete', function(e, data) {
-        _this.unsubscribe('login:complete', callback);
+      subscription_event = 'login:complere';
+      this.subscribe(subscription_event, function(e, data) {
+        _this.unsubscribe(subscription_event, callback);
         return typeof callback === "function" ? callback(data) : void 0;
       });
       $.extend(data, {
-        original_callback: 'loginComplete'
+        _callback: 'loginComplete',
+        _subscribed_event: subscription_event
       });
       return this.perform('login', data);
     };
 
-    App.prototype.loginComplete = function(data) {
-      return this.publish('login:complete', data);
+    App.prototype.loginComplete = function(data, event_to_publish) {
+      if (event_to_publish != null) {
+        return this.publish(event_to_publish, data);
+      }
     };
 
     App.prototype.when_window_loads = function(callback) {

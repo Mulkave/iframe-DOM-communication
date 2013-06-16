@@ -17,8 +17,10 @@ class App
 
 		console.log 'App received message', action, data
 
-		switch action
-			when 'loginComplete' then @loginComplete data
+		original = data?.original
+		result   = data?.result
+
+		@[action]?(result, original._subscribed_event)
 
 
 	perform: (action, data)->
@@ -26,13 +28,16 @@ class App
 		@when_window_loads => @iframe.contentWindow.postMessage "#{action}:#{JSON.stringify(data)}", 'http://localhost:5656/iframe.html'
 
 	login: (data, callback)->
-		@subscribe 'login:complete', (e, data)=>
-			@unsubscribe 'login:complete', callback
+
+		subscription_event = 'login:complere'
+
+		@subscribe subscription_event, (e, data)=>
+			@unsubscribe subscription_event, callback
 			callback?(data)
-		$.extend data, {original_callback: 'loginComplete'}
+		$.extend data, {_callback: 'loginComplete', _subscribed_event: subscription_event}
 		@perform 'login', data # .. deal with callback
 
-	loginComplete: (data)-> @publish 'login:complete', data
+	loginComplete: (data, event_to_publish)-> @publish event_to_publish, data if event_to_publish?
 
 	when_window_loads: (callback)->
 		if document.readyState isnt 'complete' then window.onload = callback else callback?()

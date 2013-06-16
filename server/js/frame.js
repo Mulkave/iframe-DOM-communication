@@ -24,12 +24,18 @@
             name: 'Mahatma Gandhi',
             email: 'fast@forever.net'
           };
-          return this.tell(data.original_callback, profile);
+          return this.tell(data, profile);
       }
     };
 
-    Frame.prototype.tell = function(message, data) {
-      return parent.postMessage("" + message + ":" + (JSON.stringify(data)), document.referrer);
+    Frame.prototype.tell = function(original_data, data) {
+      var all;
+
+      all = {
+        original: original_data,
+        result: data
+      };
+      return parent.postMessage("" + original_data._callback + ":" + (JSON.stringify(all)), document.referrer);
     };
 
     Frame.prototype.login = function(data) {
