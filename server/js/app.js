@@ -40,6 +40,9 @@
         _this.unsubscribe('login:complete', callback);
         return typeof callback === "function" ? callback(data) : void 0;
       });
+      $.extend(data, {
+        original_callback: 'loginComplete'
+      });
       return this.perform('login', data);
     };
 

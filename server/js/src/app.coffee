@@ -29,6 +29,7 @@ class App
 		@subscribe 'login:complete', (e, data)=>
 			@unsubscribe 'login:complete', callback
 			callback?(data)
+		$.extend data, {original_callback: 'loginComplete'}
 		@perform 'login', data # .. deal with callback
 
 	loginComplete: (data)-> @publish 'login:complete', data

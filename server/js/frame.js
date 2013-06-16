@@ -24,7 +24,7 @@
             name: 'Mahatma Gandhi',
             email: 'fast@forever.net'
           };
-          return this.tell('loginComplete', profile);
+          return this.tell(data.original_callback, profile);
       }
     };
 

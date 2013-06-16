@@ -24,7 +24,7 @@ class Frame
 					email: 'fast@forever.net'
 				}
 
-				@tell 'loginComplete', profile
+				@tell data.original_callback, profile
 
 	tell: (message, data)-> parent.postMessage "#{message}:#{JSON.stringify(data)}", document.referrer
 	login: (data)-> console.log 'should perform logging in with data', data
