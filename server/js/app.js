@@ -33,14 +33,10 @@
     };
 
     App.prototype.login = function(data, callback) {
-      var subscription_event,
-        _this = this;
+      var subscription_event;
 
-      subscription_event = 'login:complere';
-      this.subscribe(subscription_event, function(e, data) {
-        _this.unsubscribe(subscription_event, callback);
-        return typeof callback === "function" ? callback(data) : void 0;
-      });
+      subscription_event = 'login:complete';
+      this.subscribe_once(subscription_event, callback);
       $.extend(data, {
         _callback: 'loginComplete',
         _subscribed_event: subscription_event
@@ -67,9 +63,20 @@
       return $(this).on(event, callback);
     };
 
+    App.prototype.subscribe_once = function(event, callback) {
+      var _this = this;
+
+      return this.subscribe(event, function(e, data) {
+        _this.unsubscribe(event);
+        return typeof callback === "function" ? callback(data) : void 0;
+      });
+    };
+
     App.prototype.unsubscribe = function(event, callback) {
       console.debug('dropping subscription to', event);
-      return $(this).off(event, callback);
+      console.log('events before unsubscribing:', $._data(this, 'events'));
+      $(this).off(event, callback);
+      return console.log('events after unsubscribing:', $._data(this, 'events'));
     };
 
     App.prototype.publish = function() {
